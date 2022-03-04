@@ -4,7 +4,17 @@ const insights = require('./applicationinsights')
 const streams = require('./streams')
 const pumpify = require('pumpify')
 
-async function createWriteStream (options = {}) {
+function createWriteStreamSync (
+  /**
+   * @type {{
+   *   setup?: (
+   *     appInsights: typeof import('applicationinsights')
+   *   ) => typeof import('applicationinsights').Configuration,
+   *   key?: string
+   * }}
+   */
+  options = {}
+) {
   if (!options.setup && !options.key && !process.env.APPINSIGHTS_INSTRUMENTATIONKEY) { throw Error('Instrumentation key missing') }
   const client = new insights.Client(options)
 
@@ -16,4 +26,4 @@ async function createWriteStream (options = {}) {
   return pumpify(parseJsonStream, batchStream, writeStream)
 }
 
-module.exports.createWriteStream = createWriteStream
+module.exports.createWriteStreamSync = createWriteStreamSync
